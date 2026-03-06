@@ -6,7 +6,9 @@ import {
   TextInput, 
   KeyboardAvoidingView, 
   Platform, 
-  SafeAreaView 
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native';
 
 export default function App() {
@@ -35,53 +37,55 @@ export default function App() {
   }, [idade, dia, mes]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.inner}
-      >
-        <View style={styles.card}>
-          <Text style={styles.title}>Calculadora Ano Nascimento</Text>
-          <Text style={styles.subtitle}>Descubra seu ano de nascimento</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.inner}
+        >
+          <View style={styles.card}>
+            <Text style={styles.title}>Calculadora Ano Nascimento</Text>
+            <Text style={styles.subtitle}>Descubra seu ano de nascimento</Text>
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Sua Idade</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ex: 25"
-              keyboardType="numeric"
-              value={idade}
-              onChangeText={setIdade}
-            />
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Sua Idade</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: 25"
+                keyboardType="numeric"
+                value={idade}
+                onChangeText={setIdade}
+              />
 
-            <Text style={styles.label}>Dia de Nascimento</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ex: 15"
-              keyboardType="numeric"
-              value={dia}
-              onChangeText={setDia}
-            />
+              <Text style={styles.label}>Dia de Nascimento</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: 15"
+                keyboardType="numeric"
+                value={dia}
+                onChangeText={setDia}
+              />
 
-            <Text style={styles.label}>Mês de Nascimento</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ex: 08"
-              keyboardType="numeric"
-              value={mes}
-              onChangeText={setMes}
-            />
-          </View>
-
-          {anoNascimento && (
-            <View style={styles.resultContainer}>
-              <Text style={styles.resultLabel}>Você nasceu em:</Text>
-              <Text style={styles.resultValue}>{anoNascimento}</Text>
+              <Text style={styles.label}>Mês de Nascimento</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: 08"
+                keyboardType="numeric"
+                value={mes}
+                onChangeText={setMes}
+              />
             </View>
-          )}
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+            {anoNascimento && (
+              <View style={styles.resultContainer}>
+                <Text style={styles.resultLabel}>Você nasceu em:</Text>
+                <Text style={styles.resultValue}>{anoNascimento}</Text>
+              </View>
+            )}
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -113,6 +117,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FF69B4',
     marginBottom: 5,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
