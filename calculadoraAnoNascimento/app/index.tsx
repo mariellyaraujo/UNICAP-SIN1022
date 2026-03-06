@@ -24,8 +24,6 @@ export default function App() {
 
       let anoCalculado = anoAtual - parseInt(idade);
 
-      // Verificação lógica: se a pessoa ainda não fez aniversário este ano, 
-      // ela nasceu no ano anterior ao cálculo simples (AnoAtual - Idade).
       if (parseInt(mes) > mesAtual || (parseInt(mes) === mesAtual && parseInt(dia) > diaAtual)) {
         anoCalculado--;
       }
@@ -34,7 +32,7 @@ export default function App() {
     } else {
       setAnoNascimento(null);
     }
-  }, [idade, dia, mes]); // Monitora esses 3 estados
+  }, [idade, dia, mes]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -90,7 +88,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFE4E1', // Misty Rose (Rosa bem clarinho)
+    backgroundColor: '#FFE4E1',
   },
   inner: {
     flex: 1,
@@ -113,7 +111,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FF69B4', // Hot Pink
+    color: '#FF69B4',
     marginBottom: 5,
   },
   subtitle: {
@@ -125,7 +123,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   label: {
-    color: '#FF1493',
+    color: '#410023',
     fontWeight: '600',
     marginBottom: 5,
     marginLeft: 5,
@@ -138,7 +136,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 15,
     fontSize: 16,
-    color: '#C71585',
+    color: '#410023',
   },
   resultContainer: {
     marginTop: 20,
