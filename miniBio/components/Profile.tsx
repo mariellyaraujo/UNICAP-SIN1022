@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-const fotoPerfil = require('./marielly.png');
+const fotoPerfil = require('../assets/marielly.png');
 
 const Profile = () => {
   return (
