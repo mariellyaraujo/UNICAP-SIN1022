@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     elevation: 10,
     borderWidth: 1,
     borderColor: '#FFF0F5',
+    width: 320,
   },
   imageContainer: {
     borderRadius: 80,
@@ -51,10 +52,10 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
   },
   name: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'Minecraft',
+    fontSize: 22,
     color: '#D87093',
-    letterSpacing: 1,
+    textAlign: 'center',
   },
   divider: {
     width: 40,
@@ -64,11 +65,11 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   bio: {
-    fontSize: 16,
+    fontFamily: 'Minecraft',
+    fontSize: 14,
     textAlign: 'center',
     color: '#555',
-    lineHeight: 24,
-    fontStyle: 'italic',
+    lineHeight: 22,
   },
 });
 

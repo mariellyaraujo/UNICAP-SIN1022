@@ -1,13 +1,37 @@
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { useCallback, useEffect } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import Profile from './components/Profile';
 
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
+  const [loaded, error] = useFonts({
+    'Minecraft': require('./assets/fonts/Minecraft.ttf'),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (loaded || error) {
+      await SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>
-        App criado para a disciplina Programação para Dispositivos Móveis
-      </Text>
-      <Profile />
+    <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <Text style={styles.title}>
+            App criado para a disciplina{"\n"}
+            <Text style={styles.highlight}>Programação para Dispositivos Móveis</Text>
+          </Text>
+        </View>
+        <Profile />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -15,17 +39,28 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    backgroundColor: '#FFF5F7',
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
-    paddingTop: 50,
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  header: {
+    marginBottom: 20,
+    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontFamily: 'Minecraft',
+    fontSize: 14,
+    color: '#5b0101',
     textAlign: 'center',
-    marginHorizontal: 20,
-    marginBottom: 30,
-    color: '#333',
+    lineHeight: 22,
+  },
+  highlight: {
+    fontFamily: 'Minecraft',
+    fontSize: 18,
+    color: '#D87093',
   },
 });
