@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -11,16 +11,15 @@ export default function App() {
     'Minecraft': require('./assets/fonts/Minecraft.ttf'),
   });
 
-  const onLayoutRootView = useCallback(async () => {
+  const onLayoutRootView = async () => {
     if (loaded || error) {
       await SplashScreen.hideAsync();
     }
-  }, [loaded, error]);
+  };
 
   if (!loaded && !error) {
     return null;
   }
-
   return (
     <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
