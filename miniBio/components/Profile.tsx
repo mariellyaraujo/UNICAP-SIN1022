@@ -1,49 +1,74 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
+const fotoPerfil = require('./marielly.png');
+
 const Profile = () => {
   return (
-    <View style={styles.container}>
-      <Image 
-        source={{ uri: 'https://ibb.co/60nKphPY' }}
-        style={styles.image} 
-      />
+    <View style={styles.card}>
+      <View style={styles.imageContainer}>
+        <Image 
+          source={fotoPerfil} 
+          style={styles.image} 
+        />
+      </View>
       <Text style={styles.name}>Marielly de Araújo</Text>
+      <View style={styles.divider} />
       <Text style={styles.bio}>
-        Analista Desenvolvedora Salesforce apaixonada por automação e tecnologia. 
-        Amo arte.
+        Analista Desenvolvedora Salesforce apaixonada por automação e tecnologia.{"\n"}
+        Amo arte. 🎨
       </Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  card: {
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#FFF0F5', 
-    borderRadius: 20,
-    margin: 10,
+    padding: 30,
+    backgroundColor: '#FFFFFF', 
+    borderRadius: 30,
+    margin: 20,
+    shadowColor: "#D87093",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 15,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: '#FFF0F5',
   },
-  image: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    borderWidth: 3,
-    borderColor: '#FFB6C1', 
+  imageContainer: {
+    borderRadius: 80,
+    padding: 5,
+    backgroundColor: '#FFB6C1',
     marginBottom: 15,
   },
+  image: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 4,
+    borderColor: '#fff',
+  },
   name: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#D87093',
-    marginBottom: 10,
+    letterSpacing: 1,
+  },
+  divider: {
+    width: 40,
+    height: 3,
+    backgroundColor: '#FFB6C1',
+    marginVertical: 15,
+    borderRadius: 2,
   },
   bio: {
     fontSize: 16,
     textAlign: 'center',
-    color: '#666',
-    lineHeight: 22,
+    color: '#555',
+    lineHeight: 24,
+    fontStyle: 'italic',
   },
 });
 
