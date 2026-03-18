@@ -1,41 +1,72 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function ModalScreen() {
+  const router = useRouter();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mais sobre mim</Text>
-      <View style={styles.separator} />
-      <Text style={styles.content}>
-        Atualmente sou analista desenvolvedora Salesforce Marketing Cloud,
-        focada em criar soluções personalizadas e automações eficientes!
-      </Text>
+    <View style={styles.overlay}>
+      <View style={styles.modalContent}>
+        <Text style={styles.title}>Detalhes Adicionais</Text>
+        <View style={styles.separator} />
+        
+        <Text style={styles.text}>
+          Sou estudante de ADS e apaixonada por tecnologia. 
+          Este modal faz parte da atividade de Programação para Dispositivos Móveis!
+        </Text>
+
+        <Pressable style={styles.closeButton} onPress={() => router.back()}>
+          <Text style={styles.closeButtonText}>Fechar</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    padding: 20,
-    backgroundColor: '#FFF' // Fundo branco para o modal
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // O segredo da transparência (Preto com 50% de opacidade)
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  title: { 
-    fontSize: 22, 
+  modalContent: {
+    width: '85%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#D87093' 
+    color: '#D87093',
   },
-  separator: { 
-    height: 1, 
-    width: '80%', 
-    backgroundColor: '#eee', 
-    marginVertical: 20 
+  separator: {
+    height: 1,
+    width: '100%',
+    backgroundColor: '#eee',
+    marginVertical: 15,
   },
-  content: { 
-    fontSize: 16, 
+  text: {
+    fontSize: 16,
     textAlign: 'center',
-    lineHeight: 24,
-    color: '#333'
-  }
+    color: '#444',
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: '#D87093',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });
