@@ -34,6 +34,19 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c9f78842-0f7e-4231-8c04-e18fe2da9364"
+      }
+    },
+    "owner": "marielly666",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c9f78842-0f7e-4231-8c04-e18fe2da9364"
     }
   }
 }
