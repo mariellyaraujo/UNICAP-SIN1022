@@ -7,9 +7,9 @@ export default function RootLayout() {
       <Stack.Screen 
         name="modal" 
         options={{ 
-          presentation: 'transparentModal', // MUDE AQUI para transparentModal
-          headerShown: false,               // Esconde o cabeçalho para o efeito ficar melhor
-          animation: 'fade',                // Animação suave
+          presentation: 'transparentModal',
+          headerShown: false,               
+          animation: 'fade',             
         }} 
       />
     </Stack>
