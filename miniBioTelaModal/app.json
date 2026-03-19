@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "miniBioTelaModal",
-    "slug": "miniBioTelaModal",
+    "slug": "mini-bio-tela-modal-entrega",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "minibiotelamodal",
+    "scheme": "minibiotelamodal-entrega",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -43,6 +43,18 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "30ab9ef0-7b20-456d-a9ef-bf354bafeb2f"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/30ab9ef0-7b20-456d-a9ef-bf354bafeb2f"
     }
   }
 }
