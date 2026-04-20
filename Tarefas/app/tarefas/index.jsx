@@ -2,14 +2,16 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Button,
   StyleSheet,
   Text,
   TextInput,
   View,
   Switch,
+  TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+// Verifique se o caminho do seu arquivo de API mudou ou se ainda é back4app
 import { adicionarTarefa, getTarefas, atualizarTarefa, deletarTarefa } from "@/back4app";
 
 export default function TarefasPage() {
@@ -27,7 +29,8 @@ export default function TarefasPage() {
   });
 
   const mutationUpdate = useMutation({
-    mutationFn: ({ id, concluida }) => atualizarTarefa(id, concluida),
+    // Ajustado para passar id, descricao (opcional) e concluida
+    mutationFn: ({ id, descricao, concluida }) => atualizarTarefa(id, descricao, concluida),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tarefas"] });
     },
@@ -44,9 +47,7 @@ export default function TarefasPage() {
 
   async function handleAdicionarTarefaPress() {
     if (descricao.trim() === "") {
-      Alert.alert("Descrição inválida", "Preencha a descrição da tarefa", [
-        { text: "OK", onPress: () => {} },
-      ]);
+      Alert.alert("Descrição inválida", "Preencha a descrição da tarefa");
       return;
     }
     mutationAdd.mutate({ descricao, concluida: false });
@@ -55,39 +56,58 @@ export default function TarefasPage() {
 
   return (
     <View style={styles.container}>
-      {(isFetching || mutationAdd.isPending) && <ActivityIndicator size="large" />}
-      <TextInput
-        style={styles.input}
-        placeholder="Descrição"
-        value={descricao}
-        onChangeText={setDescricao}
-      />
-      <Button
-        title="Adicionar Tarefa"
-        onPress={handleAdicionarTarefaPress}
-        disabled={mutationAdd.isPending}
-      />
-      <View style={styles.hr} />
-      <View style={styles.tasksContainer}>
+      <Text style={styles.title}>Minhas Tarefas</Text>
+      
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="O que precisa ser feito?"
+          placeholderTextColor="#888"
+          value={descricao}
+          onChangeText={setDescricao}
+        />
+        <TouchableOpacity 
+          style={[styles.addButton, mutationAdd.isPending && { backgroundColor: '#ccc' }]} 
+          onPress={handleAdicionarTarefaPress}
+          disabled={mutationAdd.isPending}
+        >
+          {mutationAdd.isPending ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.addButtonText}>+</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      {isFetching && <ActivityIndicator size="small" color="#6200ee" style={{ marginBottom: 10 }} />}
+
+      <ScrollView style={styles.tasksContainer} showsVerticalScrollIndicator={false}>
         {data?.map((t) => (
-          <View key={t.objectId} style={styles.taskRow}>
-            <Text style={t.concluida && styles.strikethroughText}>
-              {t.descricao}
-            </Text>
-            <Switch
-              value={t.concluida}
-              onValueChange={(value) =>
-                mutationUpdate.mutate({ id: t.objectId, concluida: value })
-              }
-            />
-            <Button
-              title="Excluir"
-              color="red"
-              onPress={() => mutationDelete.mutate(t.objectId)}
-            />
+          // Atenção: Use t.id ou t.objectId conforme sua API retornar
+          <View key={t.id || t.objectId} style={styles.taskCard}>
+            <View style={styles.taskInfo}>
+              <Switch
+                value={t.concluida}
+                trackColor={{ false: "#eee", true: "#d1c4e9" }}
+                thumbColor={t.concluida ? "#6200ee" : "#f4f3f4"}
+                onValueChange={(value) =>
+                  mutationUpdate.mutate({ id: t.id || t.objectId, descricao: t.descricao, concluida: value })
+                }
+              />
+              <Text style={[styles.taskText, t.concluida && styles.strikethroughText]}>
+                {t.descricao}
+              </Text>
+            </View>
+            
+            <TouchableOpacity 
+              onPress={() => mutationDelete.mutate(t.id || t.objectId)}
+              style={styles.deleteButton}
+            >
+              <Text style={styles.deleteButtonText}>Excluir</Text>
+            </TouchableOpacity>
           </View>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -95,34 +115,91 @@ export default function TarefasPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    padding: 10,
+    backgroundColor: "#f5f5f5",
+    paddingTop: 50,
+    paddingHorizontal: 20,
   },
-  tasksContainer: {
-    width: "100%",
-    paddingLeft: 15,
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 20,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    marginBottom: 20,
   },
   input: {
-    borderColor: "black",
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    paddingHorizontal: 15,
+    height: 50,
+    fontSize: 16,
     borderWidth: 1,
-    width: "90%",
-    marginBottom: 5,
+    borderColor: "#ddd",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  hr: {
-    height: 1,
-    backgroundColor: "black",
-    width: "95%",
-    marginVertical: 10,
+  addButton: {
+    backgroundColor: "#6200ee",
+    width: 50,
+    height: 50,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 10,
+    elevation: 3,
   },
-  strikethroughText: {
-    textDecorationLine: "line-through",
-    textDecorationStyle: "solid",
-    textDecorationColor: "red",
+  addButtonText: {
+    color: "#fff",
+    fontSize: 24,
+    fontWeight: "bold",
   },
-  taskRow: {
+  tasksContainer: {
+    flex: 1,
+  },
+  taskCard: {
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 15,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  taskInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  taskText: {
+    fontSize: 16,
+    color: "#444",
+    marginLeft: 10,
+    flex: 1,
+  },
+  strikethroughText: {
+    textDecorationLine: "line-through",
+    color: "#aaa",
+  },
+  deleteButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: "#ffebee",
+  },
+  deleteButtonText: {
+    color: "#ff1744",
+    fontSize: 12,
+    fontWeight: "bold",
   },
 });
