@@ -1,39 +1,26 @@
 import axios from "axios";
 
-const urlBase = "https://parseapi.back4app.com/classes/Tarefa";
-const headers = {
-  "X-Parse-Application-Id": "V5XCMWk5ZbEwZJLNPUH8UcQs2S2JfqQGiqE2XqyS",
-  "X-Parse-JavaScript-Key": "alleCh5CXaYMwccNUMlbqAyU3KQfy6Z9M2pQN79x",
-};
-const headersJson = {
-  ...headers,
-  "Content-Type": "application/json",
-};
+const urlBase = "https://atv-tarefas-aos.vercel.app/tarefas";
 
 export async function getTarefas() {
-  const response = await axios.get(urlBase, {
-    headers: headers,
-  });
-  return response.data.results;
+  const response = await axios.get(urlBase);
+  return response.data; 
 }
 
 export async function adicionarTarefa(novaTarefa) {
-  const response = await axios.post(urlBase, novaTarefa, {
-    headers: headersJson,
-  });
+  const response = await axios.post(urlBase, novaTarefa);
   return response.data;
 }
 
-export async function atualizarTarefa(id, concluida) {
-  const response = await axios.put(`${urlBase}/${id}`, { concluida }, {
-    headers: headersJson,
+export async function atualizarTarefa(id, descricao, concluida) {
+  const response = await axios.put(`${urlBase}/${id}`, { 
+    descricao, 
+    concluida 
   });
   return response.data;
 }
 
 export async function deletarTarefa(id) {
-  const response = await axios.delete(`${urlBase}/${id}`, {
-    headers: headers,
-  });
+  const response = await axios.delete(`${urlBase}/${id}`);
   return response.data;
 }
