@@ -19,7 +19,7 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <Avatar 
             size='giant' 
-            source={{ uri: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=stardew' }} 
+            source={{ uri: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=pink&hairColor=3e2723&skinColor=ae5d29&clothingColor=9e0b0b' }} 
             style={styles.avatar}
           />
           <Text category='h4' style={styles.title}>Marielly's Farm</Text>
