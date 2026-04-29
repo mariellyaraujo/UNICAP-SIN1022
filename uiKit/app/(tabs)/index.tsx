@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, ScrollView, Modal } from 'react-native';
 import { Layout, Text, Card, Button, Avatar } from '@ui-kitten/components';
-import { Ionicons } from '@expo/vector-icons'; // Ícones nativos do Expo
+import { Ionicons } from '@expo/vector-icons'; 
 
 export default function HomeScreen() {
   const [visible, setVisible] = useState(false);
@@ -22,7 +22,7 @@ export default function HomeScreen() {
             source={{ uri: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=stardew' }} 
             style={styles.avatar}
           />
-          <Text category='h4' style={styles.title}>Gemy's Farm ✨</Text>
+          <Text category='h4' style={styles.title}>Marielly's Farm</Text>
           <Text style={styles.subtitle}>Fazendeira & Mineradora de Diamantes</Text>
         </View>
 
