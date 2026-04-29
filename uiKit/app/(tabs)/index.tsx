@@ -1,68 +1,93 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView, View } from 'react-native';
-import { Layout, Text, Button, Input, Radio, RadioGroup, Avatar, Card } from '@ui-kitten/components';
+import { StyleSheet, View, ScrollView, Modal } from 'react-native';
+import { Layout, Text, Card, Button, Avatar } from '@ui-kitten/components';
+import { Ionicons } from '@expo/vector-icons'; // Ícones nativos do Expo
 
 export default function HomeScreen() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [value, setValue] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [explanation, setExplanation] = useState('');
+
+  const showInfo = (text: string) => {
+    setExplanation(text);
+    setVisible(true);
+  };
 
   return (
     <Layout style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        {/* 1. AVATAR (Super fofo) */}
+        
         <View style={styles.header}>
           <Avatar 
             size='giant' 
-            source={{ uri: 'https://api.dicebear.com/7.x/adventurer/svg?seed=fofa' }} 
+            source={{ uri: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=stardew' }} 
             style={styles.avatar}
           />
-          <Text category='h4' style={styles.title}>Olá, Usuária! ✨</Text>
+          <Text category='h4' style={styles.title}>Gemy's Farm ✨</Text>
+          <Text style={styles.subtitle}>Fazendeira & Mineradora de Diamantes</Text>
         </View>
 
-        {/* 2. CARD COM INPUT */}
         <Card style={styles.card}>
-          <Text category='s1' style={styles.label}>O que está pensando?</Text>
-          <Input
-            placeholder='Escreva algo doce...'
-            value={value}
-            onChangeText={setValue}
-            style={styles.input}
-          />
+          <View style={styles.cardHeader}>
+            <Text category='h6' style={{ color: '#DE3163' }}>Minhas Estrelas</Text>
+            <TouchableOpacity onPress={() => showInfo("Este é o componente 'Card'. Ele organiza o conteúdo com elevação e bordas arredondadas automáticas pelo Design System.")}>
+              <Ionicons name="information-circle-outline" size={24} color="#DE3163" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.starRow}>
+            <Ionicons name="star" size={30} color="#FFD1DC" />
+            <Ionicons name="star" size={30} color="#FFD1DC" />
+            <Ionicons name="star" size={30} color="#FFD1DC" />
+            <Ionicons name="star-half" size={30} color="#FFD1DC" />
+          </View>
         </Card>
 
-        {/* 3. RADIO GROUP (Seleção fofa) */}
-        <View style={styles.section}>
-          <Text category='s1' style={styles.label}>Escolha sua vibe de hoje:</Text>
-          <RadioGroup
-            selectedIndex={selectedIndex}
-            onChange={index => setSelectedIndex(index)}>
-            <Radio>🌸 Rosa Pastel</Radio>
-            <Radio>✨ Brilho Mágico</Radio>
-            <Radio>☁️ Nuvem Suave</Radio>
-          </RadioGroup>
-        </View>
+        <Card style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text category='h6' style={{ color: '#DE3163' }}>Gaming Vibe</Text>
+            <TouchableOpacity onPress={() => showInfo("Aqui usamos o componente 'Text' com categorias de tipografia (h6) e o sistema de cores customizado via style.")}>
+              <Ionicons name="information-circle-outline" size={24} color="#DE3163" />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.gameItem}>• Minecraft ⛏️</Text>
+          <Text style={styles.gameItem}>• Stardew Valley 🌾</Text>
+          <Text style={styles.gameItem}>• Animal Crossing 🍎</Text>
+        </Card>
 
-        {/* 4. BOTÕES COLORIDOS */}
-        <View style={styles.buttonRow}>
-          <Button status='success' style={styles.roundedButton}>Salvar</Button>
-          <Button status='danger' appearance='outline' style={styles.roundedButton}>Cancelar</Button>
-        </View>
+        <Modal
+          transparent={true}
+          visible={visible}
+          animationType="fade"
+          onRequestClose={() => setVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text category='h6' style={{ marginBottom: 10 }}>Explicação Técnica 🤓</Text>
+              <Text style={{ textAlign: 'center', marginBottom: 20 }}>{explanation}</Text>
+              <Button status='danger' onPress={() => setVisible(false)} style={{ borderRadius: 20 }}>
+                Entendi!
+              </Button>
+            </View>
+          </View>
+        </Modal>
 
       </ScrollView>
     </Layout>
   );
 }
 
+import { TouchableOpacity } from 'react-native';
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF5F7' },
-  content: { padding: 20, paddingTop: 60 },
+  container: { flex: 1, backgroundColor: '#121212' }, // Fundo Preto
+  content: { padding: 25, paddingTop: 60 },
   header: { alignItems: 'center', marginBottom: 30 },
-  avatar: { marginBottom: 10, borderWidth: 2, borderColor: '#FFB6C1' },
-  title: { color: '#D87093' },
-  card: { borderRadius: 25, marginBottom: 20, borderWidth: 0, elevation: 3 },
-  section: { marginBottom: 25 },
-  label: { marginBottom: 10, color: '#888' },
-  input: { borderRadius: 15 },
-  buttonRow: { flexDirection: 'row', justifyContent: 'space-around' },
-  roundedButton: { borderRadius: 20, flex: 1, marginHorizontal: 5 }
+  avatar: { marginBottom: 10, borderWidth: 3, borderColor: '#DE3163' }, // Borda Cereja
+  title: { color: '#FFD1DC', fontFamily: 'System' }, // Rosa Iogurte
+  subtitle: { color: '#888', marginTop: 5 },
+  card: { borderRadius: 20, marginBottom: 20, backgroundColor: '#1A1A1A', borderColor: '#333' },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
+  starRow: { flexDirection: 'row', justifyContent: 'center', gap: 10 },
+  gameItem: { color: '#FFF', marginVertical: 4, fontSize: 16 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', alignItems: 'center' },
+  modalContent: { width: '80%', backgroundColor: 'white', padding: 25, borderRadius: 30, alignItems: 'center' }
 });
