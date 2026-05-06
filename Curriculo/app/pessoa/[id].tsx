@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
+import { useLocalSearchParams, Stack, useRouter, useFocusEffect } from 'expo-router';
 import api from './../../src/services/api';
 import { useTheme } from './../../src/context/ThemeContext';
 import { InfoCard } from './../../src/components/InfoCard';
@@ -12,9 +12,17 @@ export default function PessoaDetalhes() {
   const { theme, isDark, toggleTheme } = useTheme();
   const [data, setData] = useState<any>(null);
 
-  const carregarDados = () => api.get(`/pessoas/${id}`).then((res) => setData(res.data));
+  const carregarDados = () => {
+    api.get(`/pessoas/${id}`)
+      .then((res) => setData(res.data))
+      .catch((err) => console.error(err));
+  };
 
-  useEffect(() => { carregarDados(); }, [id]);
+  useFocusEffect(
+    React.useCallback(() => {
+      carregarDados();
+    }, [id])
+  );
 
   const handleDeletePessoa = () => {
     Alert.alert("Atenção", "Deseja excluir este perfil?", [
@@ -58,21 +66,27 @@ export default function PessoaDetalhes() {
 
       <View style={styles.sectionHeader}>
         <Text style={[styles.sectionTitle, { color: theme.primary }]}>Formações Acadêmicas</Text>
-        <TouchableOpacity style={styles.btnAdd} onPress={() => alert('Add Formação')}>
+        <TouchableOpacity 
+          style={styles.btnAdd} 
+          onPress={() => router.push({ pathname: '/formacao/criar', params: { pessoaId: id } })}
+        >
           <Plus color={theme.primary} size={22} />
         </TouchableOpacity>
       </View>
-      {data.formacoes.map((f: any) => (
+      {data.formacoes && data.formacoes.map((f: any) => (
         <InfoCard key={f.id} title={f.curso} subtitle={f.instituicao} onDelete={() => {}} />
       ))}
 
       <View style={styles.sectionHeader}>
         <Text style={[styles.sectionTitle, { color: theme.primary }]}>Experiências Profissionais</Text>
-        <TouchableOpacity style={styles.btnAdd} onPress={() => alert('Add Experiência')}>
+        <TouchableOpacity 
+          style={styles.btnAdd} 
+          onPress={() => router.push({ pathname: '/experiencia/criar', params: { pessoaId: id } })}
+        >
           <Plus color={theme.primary} size={22} />
         </TouchableOpacity>
       </View>
-      {data.experiencias.map((e: any) => (
+      {data.experiencias && data.experiencias.map((e: any) => (
         <InfoCard key={e.id} title={e.cargo} subtitle={e.empresa} onDelete={() => {}} />
       ))}
 
