@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
-import api from '../../src/services/api';
-import { useTheme } from '../../src/context/ThemeContext';
-import { Moon, Sun } from 'lucide-react-native';
-
-interface Pessoa {
-  id: string;
-  nome: string;
-  email: string;
-}
+import { useRouter, useFocusEffect } from 'expo-router';
+import api from './../../src/services/api';
+import { useTheme } from './../../src/context/ThemeContext';
+import { Moon, Sun, Plus } from 'lucide-react-native';
 
 export default function Home() {
-  const [pessoas, setPessoas] = useState<Pessoa[]>([]);
+  const [pessoas, setPessoas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { theme, isDark, toggleTheme } = useTheme();
   const router = useRouter();
 
-  useEffect(() => {
+  const carregarPessoas = () => {
     api.get('/pessoas')
       .then((res) => setPessoas(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  useFocusEffect(React.useCallback(() => {
+    carregarPessoas();
+  }, []));
 
   if (loading) {
     return (
@@ -43,7 +41,7 @@ export default function Home() {
 
       <FlatList
         data={pessoas}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
           <TouchableOpacity 
             style={[styles.card, { backgroundColor: theme.card, borderLeftColor: theme.primary }]}
@@ -54,6 +52,13 @@ export default function Home() {
           </TouchableOpacity>
         )}
       />
+
+      <TouchableOpacity 
+        style={[styles.fab, { backgroundColor: theme.primary }]}
+        onPress={() => router.push('/pessoa/criar')}
+      >
+        <Plus color={isDark ? '#000' : '#fff'} size={30} />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -64,6 +69,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 },
   title: { fontSize: 28, fontWeight: 'bold' },
   themeBtn: { padding: 8 },
-  card: { padding: 20, marginBottom: 15, borderRadius: 12, borderLeftWidth: 6, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 },
-  cardTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 4 }
+  card: { padding: 20, marginBottom: 15, borderRadius: 12, borderLeftWidth: 6, elevation: 2 },
+  cardTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 4 },
+  fab: { position: 'absolute', bottom: 30, right: 30, width: 60, height: 60, borderRadius: 30, justifyContent: 'center', alignItems: 'center', elevation: 5 }
 });

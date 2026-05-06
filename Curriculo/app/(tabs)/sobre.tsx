@@ -1,37 +1,42 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../src/context/ThemeContext';
+import { Sun, Moon, Code2, Rocket, Heart } from 'lucide-react-native';
 
 export default function Sobre() {
-  const { theme } = useTheme();
+  const { theme, isDark, toggleTheme } = useTheme();
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-      <Text style={[styles.title, { color: theme.primary }]}>Sobre o Projeto</Text>
-      
-      <View style={styles.card}>
-        <Text style={[styles.subtitle, { color: theme.primary }]}>Tecnologias</Text>
-        <Text style={[styles.text, { color: theme.text }]}>
-          • React Native + Expo{"\n"}
-          • Expo Router{"\n"}
-          • TypeScript{"\n"}
-          • Axios para API{"\n"}
-          • Lucide React Native (Ícones){"\n"}
-          • Context API para Temas
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: theme.text }]}>Sobre o App</Text>
+        <TouchableOpacity onPress={toggleTheme}>
+          {isDark ? <Sun color={theme.primary} size={28} /> : <Moon color={theme.primary} size={28} />}
+        </TouchableOpacity>
+      </View>
+
+      <View style={[styles.glassCard, { backgroundColor: theme.card }]}>
+        <Code2 color={theme.primary} size={32} style={styles.icon} />
+        <Text style={[styles.cardTitle, { color: theme.primary }]}>Tecnologias</Text>
+        <Text style={[styles.cardText, { color: theme.text }]}>
+          Construído com React Native, Expo Router e Axios para uma experiência fluida e moderna.
         </Text>
       </View>
 
-      <View style={styles.card}>
-        <Text style={[styles.subtitle, { color: theme.primary }]}>Funcionalidade Extra</Text>
-        <Text style={[styles.text, { color: theme.text }]}>
-          Sistema de Dark Mode dinâmico com paleta personalizada (Preto/Cereja e Branco/Rosa) gerenciado via Context API, garantindo troca de estado global sem refresh.
+      <View style={[styles.glassCard, { backgroundColor: theme.card }]}>
+        <Rocket color={theme.primary} size={32} style={styles.icon} />
+        <Text style={[styles.cardTitle, { color: theme.primary }]}>Funcionalidade Extra</Text>
+        <Text style={[styles.cardText, { color: theme.text }]}>
+          Dark Mode dinâmico com paleta personalizada:{"\n"}
+          Dark: Preto & Cereja | Light: Branco & Rosa.
         </Text>
       </View>
 
-      <View style={styles.card}>
-        <Text style={[styles.subtitle, { color: theme.primary }]}>Desenvolvimento</Text>
-        <Text style={[styles.text, { color: theme.text }]}>
-          App integrado ao Back-end Node.js/Express hospedado na Vercel com banco de dados PostgreSQL.
+      <View style={[styles.glassCard, { backgroundColor: theme.card, marginBottom: 50 }]}>
+        <Heart color={theme.primary} size={32} style={styles.icon} />
+        <Text style={[styles.cardTitle, { color: theme.primary }]}>Propósito</Text>
+        <Text style={[styles.cardText, { color: theme.text }]}>
+          Atividade de Portfólio integrada com Back-end Node.js hospedado na Vercel.
         </Text>
       </View>
     </ScrollView>
@@ -39,9 +44,11 @@ export default function Sobre() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, paddingTop: 60 },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 25 },
-  card: { marginBottom: 20, padding: 15, borderRadius: 10 },
-  subtitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
-  text: { fontSize: 16, lineHeight: 26 }
+  container: { flex: 1, padding: 25, paddingTop: 60 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 40 },
+  title: { fontSize: 32, fontWeight: 'bold' },
+  glassCard: { padding: 20, borderRadius: 20, marginBottom: 20, elevation: 5, shadowColor: '#000', shadowOpacity: 0.1 },
+  icon: { marginBottom: 10 },
+  cardTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 8 },
+  cardText: { fontSize: 15, lineHeight: 22, opacity: 0.8 }
 });

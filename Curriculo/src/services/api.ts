@@ -4,4 +4,5 @@ const api = axios.create({
   baseURL: 'https://atv-aos-curriculo.vercel.app/api',
 });
 
+
 export default api;
