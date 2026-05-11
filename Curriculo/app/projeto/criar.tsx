@@ -10,27 +10,27 @@ export default function CriarProjeto() {
   const { theme } = useTheme();
   const [form, setForm] = useState({ nome: '', descricao: '' });
 
-  
-
   const handleSalvar = async () => {
-  const idNumerico = Number(pessoaId);
-  
-  const payload = { 
-    cargo: form.nome, 
-    empresa: `[PROJETO] ${form.descricao}`, 
-    pessoaId: idNumerico 
+    if (!form.nome || !form.descricao) return;
+    if (!pessoaId) {
+      Alert.alert("Erro", "ID do perfil não encontrado.");
+      return;
+    }
+
+    const payload = { 
+      cargo: form.nome, 
+      empresa: `[PROJETO] ${form.descricao}`, 
+      pessoaId: String(pessoaId) 
+    };
+
+    try {
+      await api.post('/experiencias', payload);
+      router.back();
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Erro", "Falha ao salvar projeto.");
+    }
   };
-
-  // ESTE ALERT VAI TE DIZER A VERDADE:
-  alert("Enviando ID: " + payload.pessoaId + " tipo: " + typeof payload.pessoaId);
-
-  try {
-    await api.post('/experiencias', payload);
-    router.back();
-  } catch (err) {
-    console.error(err);
-  }
-};
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -40,7 +40,7 @@ export default function CriarProjeto() {
         style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
         value={form.nome}
         onChangeText={(t) => setForm({...form, nome: t})}
-        placeholder="Ex: App de Finanças"
+        placeholder="Nome do projeto..."
         placeholderTextColor="#888"
       />
       <Text style={[styles.label, { color: theme.primary }]}>Descrição</Text>
@@ -50,7 +50,7 @@ export default function CriarProjeto() {
         onChangeText={(t) => setForm({...form, descricao: t})}
         multiline
         textAlignVertical="top"
-        placeholder="O que foi desenvolvido..."
+        placeholder="Descreve o projeto..."
         placeholderTextColor="#888"
       />
       <TouchableOpacity style={[styles.btn, { backgroundColor: theme.primary }]} onPress={handleSalvar}>

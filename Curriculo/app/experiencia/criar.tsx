@@ -10,7 +10,6 @@ export default function CriarExperiencia() {
   const { theme } = useTheme();
   const [form, setForm] = useState({ cargo: '', empresa: '' });
 
-  
   const handleSalvar = async () => {
     if (!form.cargo || !form.empresa) return;
     if (!pessoaId) {
@@ -19,8 +18,9 @@ export default function CriarExperiencia() {
     }
 
     const payload = { 
-      ...form, 
-      pessoaId: Number(pessoaId) 
+      cargo: form.cargo,
+      empresa: form.empresa,
+      pessoaId: String(pessoaId) 
     };
 
     try {
@@ -34,13 +34,13 @@ export default function CriarExperiencia() {
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-      <Stack.Screen options={{ title: 'Adicionar Experiência', headerShown: true }} />
+      <Stack.Screen options={{ title: 'Nova Experiência', headerShown: true }} />
       <Text style={[styles.label, { color: theme.primary }]}>Cargo</Text>
       <TextInput 
         style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
         value={form.cargo}
         onChangeText={(t) => setForm({...form, cargo: t})}
-        placeholder="Ex: Desenvolvedor Front-end"
+        placeholder="Cargo exercido..."
         placeholderTextColor="#888"
       />
       <Text style={[styles.label, { color: theme.primary }]}>Empresa</Text>
@@ -48,7 +48,7 @@ export default function CriarExperiencia() {
         style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
         value={form.empresa}
         onChangeText={(t) => setForm({...form, empresa: t})}
-        placeholder="Ex: Google"
+        placeholder="Nome da empresa..."
         placeholderTextColor="#888"
       />
       <TouchableOpacity style={[styles.btn, { backgroundColor: theme.primary }]} onPress={handleSalvar}>

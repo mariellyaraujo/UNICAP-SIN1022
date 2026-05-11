@@ -8,20 +8,10 @@ export default function CriarFormacao() {
   const router = useRouter();
   const { pessoaId } = useLocalSearchParams();
   const { theme } = useTheme();
-  
-  const [form, setForm] = useState({
-    curso: '',
-    instituicao: '',
-    ano_conclusao: ''
-  });
+  const [form, setForm] = useState({ curso: '', instituicao: '', ano_conclusao: '' });
 
-  
   const handleSalvar = async () => {
-    if (!form.curso || !form.instituicao) {
-      Alert.alert("Aviso", "Por favor, preencha o curso e a instituição.");
-      return;
-    }
-
+    if (!form.curso || !form.instituicao) return;
     if (!pessoaId) {
       Alert.alert("Erro", "ID do perfil não encontrado.");
       return;
@@ -29,7 +19,7 @@ export default function CriarFormacao() {
 
     const payload = { 
       ...form, 
-      pessoaId: Number(pessoaId) 
+      pessoaId: String(pessoaId) 
     };
 
     try {
@@ -37,32 +27,29 @@ export default function CriarFormacao() {
       router.back();
     } catch (err) {
       console.error(err);
-      Alert.alert("Erro", "Falha ao salvar formação académica.");
+      Alert.alert("Erro", "Falha ao salvar formação.");
     }
   };
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-      <Stack.Screen options={{ title: 'Adicionar Formação', headerShown: true }} />
-      
+      <Stack.Screen options={{ title: 'Nova Formação', headerShown: true }} />
       <Text style={[styles.label, { color: theme.primary }]}>Curso</Text>
       <TextInput 
         style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
         value={form.curso}
         onChangeText={(t) => setForm({...form, curso: t})}
-        placeholder="Ex: Engenharia de Software"
+        placeholder="Nome do curso..."
         placeholderTextColor="#888"
       />
-
       <Text style={[styles.label, { color: theme.primary }]}>Instituição</Text>
       <TextInput 
         style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
         value={form.instituicao}
         onChangeText={(t) => setForm({...form, instituicao: t})}
-        placeholder="Ex: Universidade de Coimbra"
+        placeholder="Faculdade/Escola..."
         placeholderTextColor="#888"
       />
-
       <Text style={[styles.label, { color: theme.primary }]}>Ano de Conclusão</Text>
       <TextInput 
         style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
@@ -72,7 +59,6 @@ export default function CriarFormacao() {
         placeholderTextColor="#888"
         keyboardType="numeric"
       />
-
       <TouchableOpacity style={[styles.btn, { backgroundColor: theme.primary }]} onPress={handleSalvar}>
         <Text style={styles.btnText}>Salvar Formação</Text>
       </TouchableOpacity>

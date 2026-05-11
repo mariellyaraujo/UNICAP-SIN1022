@@ -78,7 +78,7 @@ export default function PessoaDetalhes() {
       </View>
 
       <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: theme.primary }]}>Formações Acadêmicas</Text>
+        <Text style={[styles.sectionTitle, { color: theme.primary }]}>Formações Académicas</Text>
         <TouchableOpacity style={styles.btnAdd} onPress={() => router.push({ pathname: '/formacao/criar', params: { pessoaId: id } } as any)}>
           <Plus color={theme.primary} size={22} />
         </TouchableOpacity>
