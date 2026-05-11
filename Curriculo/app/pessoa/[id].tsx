@@ -18,7 +18,7 @@ export default function PessoaDetalhes() {
       const res = await api.get(`/pessoas/${id}?t=${Date.now()}`);
       setData(res.data);
     } catch (err) {
-      console.error("Erro ao buscar dados:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }

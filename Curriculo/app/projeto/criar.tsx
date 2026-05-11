@@ -12,6 +12,10 @@ export default function CriarProjeto() {
 
   const handleSalvar = async () => {
     if (!form.nome || !form.descricao) return;
+    if (!pessoaId) {
+      Alert.alert("Erro", "ID do perfil não encontrado.");
+      return;
+    }
 
     const payload = { 
       cargo: form.nome, 
@@ -24,19 +28,19 @@ export default function CriarProjeto() {
       router.back();
     } catch (err) {
       console.error(err);
-      Alert.alert("Erro", "Não foi possível salvar o projeto.");
+      Alert.alert("Erro", "Falha ao salvar projeto.");
     }
   };
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-      <Stack.Screen options={{ title: 'Novo Projeto' }} />
+      <Stack.Screen options={{ title: 'Novo Projeto', headerShown: true }} />
       <Text style={[styles.label, { color: theme.primary }]}>Nome do Projeto</Text>
       <TextInput 
         style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
         value={form.nome}
         onChangeText={(t) => setForm({...form, nome: t})}
-        placeholder="Ex: Portfólio Pessoal"
+        placeholder="Ex: App de Finanças"
         placeholderTextColor="#888"
       />
       <Text style={[styles.label, { color: theme.primary }]}>Descrição</Text>
@@ -46,7 +50,7 @@ export default function CriarProjeto() {
         onChangeText={(t) => setForm({...form, descricao: t})}
         multiline
         textAlignVertical="top"
-        placeholder="Descreva o projeto..."
+        placeholder="O que foi desenvolvido..."
         placeholderTextColor="#888"
       />
       <TouchableOpacity style={[styles.btn, { backgroundColor: theme.primary }]} onPress={handleSalvar}>

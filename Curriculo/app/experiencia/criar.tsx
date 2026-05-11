@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 import api from './../../src/services/api';
 import { useTheme } from './../../src/context/ThemeContext';
@@ -12,32 +12,44 @@ export default function CriarExperiencia() {
 
   const handleSalvar = async () => {
     if (!form.cargo || !form.empresa) return;
-    await api.post('/experiencias', { ...form, pessoaId: Number(pessoaId) });
-    router.back();
+    if (!pessoaId) {
+      Alert.alert("Erro", "ID do perfil não encontrado.");
+      return;
+    }
+
+    const payload = { 
+      ...form, 
+      pessoaId: Number(pessoaId) 
+    };
+
+    try {
+      await api.post('/experiencias', payload);
+      router.back();
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Erro", "Falha ao salvar experiência.");
+    }
   };
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-      <Stack.Screen options={{ title: 'Adicionar Experiência', headerShown: true, headerStyle: { backgroundColor: theme.background }, headerTintColor: theme.text }} />
-      
+      <Stack.Screen options={{ title: 'Adicionar Experiência', headerShown: true }} />
       <Text style={[styles.label, { color: theme.primary }]}>Cargo</Text>
       <TextInput 
         style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
         value={form.cargo}
         onChangeText={(t) => setForm({...form, cargo: t})}
-        placeholder="Ex: Engenheiro de Software Senior"
+        placeholder="Ex: Desenvolvedor Front-end"
         placeholderTextColor="#888"
       />
-
       <Text style={[styles.label, { color: theme.primary }]}>Empresa</Text>
       <TextInput 
         style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
         value={form.empresa}
         onChangeText={(t) => setForm({...form, empresa: t})}
-        placeholder="Ex: Google Brasil"
+        placeholder="Ex: Google"
         placeholderTextColor="#888"
       />
-
       <TouchableOpacity style={[styles.btn, { backgroundColor: theme.primary }]} onPress={handleSalvar}>
         <Text style={styles.btnText}>Salvar Experiência</Text>
       </TouchableOpacity>
