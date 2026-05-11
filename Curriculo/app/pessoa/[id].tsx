@@ -6,8 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  ActivityIndicator
+ ActivityIndicator
 } from 'react-native';
+
 import {
   useLocalSearchParams,
   Stack,
@@ -17,20 +18,37 @@ import {
 
 import api from './../../src/services/api';
 import { useTheme } from './../../src/context/ThemeContext';
-import { InfoCard } from './../../src/components/InfoCard';
-import { Sun, Moon, Plus, Trash2 } from 'lucide-react-native';
+
+import {
+  Sun,
+  Moon,
+  Plus,
+  Trash2
+} from 'lucide-react-native';
 
 export default function PessoaDetalhes() {
   const { id } = useLocalSearchParams();
-  const router = useRouter();
-  const { theme, isDark, toggleTheme } = useTheme();
 
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  const {
+    theme,
+    isDark,
+    toggleTheme
+  } = useTheme();
+
+  const [data, setData] =
+    useState<any>(null);
+
+  const [loading, setLoading] =
+    useState(true);
 
   const carregarDados = async () => {
     try {
-      const response = await api.get(`/pessoas/${id}`);
+      const response = await api.get(
+        `/pessoas/${id}`
+      );
+
       setData(response.data);
     } catch (error) {
       console.log(error);
@@ -47,28 +65,23 @@ export default function PessoaDetalhes() {
 
   const handleDeleteItem = async (
     itemId: string,
-    rota: 'formacoes' | 'experiencias'
+    rota:
+      | 'formacoes'
+      | 'experiencias'
   ) => {
     try {
-      console.log('DELETANDO:', itemId);
-
-      await api.delete(`/${rota}/${itemId}`);
+      await api.delete(
+        `/${rota}/${itemId}`
+      );
 
       setData((prev: any) => ({
         ...prev,
         [rota]: prev[rota].filter(
-          (item: any) => item.id !== itemId
+          (item: any) =>
+            item.id !== itemId
         )
       }));
-
-      Alert.alert(
-        'Sucesso',
-        'Item deletado com sucesso!'
-      );
-    } catch (error: any) {
-      console.log(error?.response?.data);
-      console.log(error);
-
+    } catch (error) {
       Alert.alert(
         'Erro',
         'Não foi possível deletar.'
@@ -90,14 +103,15 @@ export default function PessoaDetalhes() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await api.delete(`/pessoas/${id}`);
+              await api.delete(
+                `/pessoas/${id}`
+              );
+
               router.replace('/');
             } catch (error) {
-              console.log(error);
-
               Alert.alert(
                 'Erro',
-                'Não foi possível excluir o perfil.'
+                'Não foi possível excluir.'
               );
             }
           }
@@ -111,7 +125,10 @@ export default function PessoaDetalhes() {
       <View
         style={[
           styles.loadingCenter,
-          { backgroundColor: theme.background }
+          {
+            backgroundColor:
+              theme.background
+          }
         ]}
       >
         <ActivityIndicator
@@ -126,44 +143,95 @@ export default function PessoaDetalhes() {
 
   return (
     <ScrollView
+      showsVerticalScrollIndicator={false}
       style={[
         styles.container,
-        { backgroundColor: theme.background }
+        {
+          backgroundColor:
+            theme.background
+        }
       ]}
     >
       <Stack.Screen
         options={{
+          title: '',
+
+          headerShadowVisible: false,
+
+          headerStyle: {
+            backgroundColor:
+              theme.background
+          },
+
+          headerTintColor:
+            theme.text,
+
           headerRight: () => (
             <TouchableOpacity
               onPress={toggleTheme}
-              style={{ marginRight: 15 }}
+              style={[
+                styles.themeBtn,
+                {
+                  backgroundColor:
+                    theme.card
+                }
+              ]}
             >
               {isDark ? (
                 <Sun
                   color={theme.primary}
-                  size={24}
+                  size={20}
                 />
               ) : (
                 <Moon
                   color={theme.primary}
-                  size={24}
+                  size={20}
                 />
               )}
             </TouchableOpacity>
-          ),
-          headerStyle: {
-            backgroundColor: theme.background
-          },
-          headerTintColor: theme.text,
-          title: ''
+          )
         }}
       />
 
       <View style={styles.headerSection}>
+        <View
+          style={[
+            styles.avatar,
+            {
+              backgroundColor:
+                'rgba(210,31,60,0.12)'
+            }
+          ]}
+        >
+          <Text
+            style={[
+              styles.avatarText,
+              {
+                color: theme.primary
+              }
+            ]}
+          >
+            {data.nome?.charAt(0)}
+          </Text>
+        </View>
+
+        <Text
+          style={[
+            styles.smallTitle,
+            {
+              color: theme.primary
+            }
+          ]}
+        >
+          ✨ profile
+        </Text>
+
         <Text
           style={[
             styles.name,
-            { color: theme.text }
+            {
+              color: theme.text
+            }
           ]}
         >
           {data.nome}
@@ -172,7 +240,9 @@ export default function PessoaDetalhes() {
         <Text
           style={[
             styles.email,
-            { color: theme.text }
+            {
+              color: theme.text
+            }
           ]}
         >
           {data.email}
@@ -180,16 +250,23 @@ export default function PessoaDetalhes() {
 
         <View style={styles.mainActions}>
           <TouchableOpacity
+            activeOpacity={0.85}
             style={[
-              styles.btnAction,
-              { backgroundColor: theme.primary }
+              styles.btnPrimary,
+              {
+                backgroundColor:
+                  theme.primary
+              }
             ]}
-            onPress={() => alert('Editar')}
           >
             <Text
               style={[
                 styles.btnText,
-                { color: isDark ? '#000' : '#fff' }
+                {
+                  color: isDark
+                    ? '#000'
+                    : '#fff'
+                }
               ]}
             >
               Editar Perfil
@@ -197,102 +274,152 @@ export default function PessoaDetalhes() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.btnAction,
-              { backgroundColor: '#ff4444' }
-            ]}
-            onPress={handleDeletePessoa}
-          >
-            <Text
-              style={[
-                styles.btnText,
-                { color: '#fff' }
-              ]}
-            >
-              Excluir Tudo
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.sectionHeader}>
-        <Text
-          style={[
-            styles.sectionTitle,
-            { color: theme.primary }
-          ]}
-        >
-          Formações Acadêmicas
-        </Text>
-
-        <TouchableOpacity
-          style={styles.btnAdd}
-          onPress={() =>
-            router.push({
-              pathname: '/formacao/criar',
-              params: { pessoaId: id }
-            } as any)
-          }
-        >
-          <Plus
-            color={theme.primary}
-            size={22}
-          />
-        </TouchableOpacity>
-      </View>
-
-      {data.formacoes?.map((f: any) => (
-        <View
-          key={f.id}
-          style={styles.rowContainer}
-        >
-          <View style={{ flex: 1 }}>
-            <InfoCard
-              title={f.curso}
-              subtitle={f.instituicao}
-              footer={f.anoConclusao}
-            />
-          </View>
-
-          <TouchableOpacity
-            style={styles.deleteButtonSide}
-            onPress={() =>
-              handleDeleteItem(
-                f.id,
-                'formacoes'
-              )
+            activeOpacity={0.85}
+            style={styles.btnDanger}
+            onPress={
+              handleDeletePessoa
             }
           >
             <Trash2
               color="#ff4444"
-              size={22}
+              size={20}
             />
           </TouchableOpacity>
         </View>
-      ))}
+      </View>
 
       <View style={styles.sectionHeader}>
         <Text
           style={[
             styles.sectionTitle,
-            { color: theme.primary }
+            {
+              color: theme.text
+            }
           ]}
         >
-          Experiências Profissionais
+          Formação
         </Text>
 
         <TouchableOpacity
           style={styles.btnAdd}
           onPress={() =>
             router.push({
-              pathname: '/experiencia/criar',
-              params: { pessoaId: id }
+              pathname:
+                '/formacao/criar',
+              params: {
+                pessoaId: id
+              }
             } as any)
           }
         >
           <Plus
             color={theme.primary}
-            size={22}
+            size={18}
+          />
+        </TouchableOpacity>
+      </View>
+
+      {data.formacoes?.map(
+        (f: any) => (
+          <View
+            key={f.id}
+            style={
+              styles.rowContainer
+            }
+          >
+            <View
+              style={[
+                styles.card,
+                {
+                  backgroundColor:
+                    theme.card
+                }
+              ]}
+            >
+              <Text
+                style={[
+                  styles.cardTitle,
+                  {
+                    color:
+                      theme.text
+                  }
+                ]}
+              >
+                {f.curso}
+              </Text>
+
+              <Text
+                style={[
+                  styles.cardSubtitle,
+                  {
+                    color:
+                      theme.text
+                  }
+                ]}
+              >
+                {f.instituicao}
+              </Text>
+
+              <Text
+                style={[
+                  styles.cardFooter,
+                  {
+                    color:
+                      theme.text
+                  }
+                ]}
+              >
+                {f.anoConclusao}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={
+                styles.deleteButtonSide
+              }
+              onPress={() =>
+                handleDeleteItem(
+                  f.id,
+                  'formacoes'
+                )
+              }
+            >
+              <Trash2
+                color="#ff4444"
+                size={18}
+              />
+            </TouchableOpacity>
+          </View>
+        )
+      )}
+
+      <View style={styles.sectionHeader}>
+        <Text
+          style={[
+            styles.sectionTitle,
+            {
+              color: theme.text
+            }
+          ]}
+        >
+          Experiências
+        </Text>
+
+        <TouchableOpacity
+          style={styles.btnAdd}
+          onPress={() =>
+            router.push({
+              pathname:
+                '/experiencia/criar',
+              params: {
+                pessoaId: id
+              }
+            } as any)
+          }
+        >
+          <Plus
+            color={theme.primary}
+            size={18}
           />
         </TouchableOpacity>
       </View>
@@ -300,22 +427,55 @@ export default function PessoaDetalhes() {
       {data.experiencias
         ?.filter(
           (e: any) =>
-            !e.empresa?.includes('[PROJETO]')
+            !e.empresa?.includes(
+              '[PROJETO]'
+            )
         )
         .map((e: any) => (
           <View
             key={e.id}
-            style={styles.rowContainer}
+            style={
+              styles.rowContainer
+            }
           >
-            <View style={{ flex: 1 }}>
-              <InfoCard
-                title={e.cargo}
-                subtitle={e.empresa}
-              />
+            <View
+              style={[
+                styles.card,
+                {
+                  backgroundColor:
+                    theme.card
+                }
+              ]}
+            >
+              <Text
+                style={[
+                  styles.cardTitle,
+                  {
+                    color:
+                      theme.text
+                  }
+                ]}
+              >
+                {e.cargo}
+              </Text>
+
+              <Text
+                style={[
+                  styles.cardSubtitle,
+                  {
+                    color:
+                      theme.text
+                  }
+                ]}
+              >
+                {e.empresa}
+              </Text>
             </View>
 
             <TouchableOpacity
-              style={styles.deleteButtonSide}
+              style={
+                styles.deleteButtonSide
+              }
               onPress={() =>
                 handleDeleteItem(
                   e.id,
@@ -325,7 +485,7 @@ export default function PessoaDetalhes() {
             >
               <Trash2
                 color="#ff4444"
-                size={22}
+                size={18}
               />
             </TouchableOpacity>
           </View>
@@ -335,48 +495,89 @@ export default function PessoaDetalhes() {
         <Text
           style={[
             styles.sectionTitle,
-            { color: theme.primary }
+            {
+              color: theme.text
+            }
           ]}
         >
-          Projetos Realizados
+          Projetos
         </Text>
 
         <TouchableOpacity
           style={styles.btnAdd}
           onPress={() =>
             router.push({
-              pathname: '/projeto/criar',
-              params: { pessoaId: id }
+              pathname:
+                '/projeto/criar',
+              params: {
+                pessoaId: id
+              }
             } as any)
           }
         >
           <Plus
             color={theme.primary}
-            size={22}
+            size={18}
           />
         </TouchableOpacity>
       </View>
 
       {data.experiencias
         ?.filter((e: any) =>
-          e.empresa?.includes('[PROJETO]')
+          e.empresa?.includes(
+            '[PROJETO]'
+          )
         )
         .map((e: any) => (
           <View
             key={e.id}
-            style={styles.rowContainer}
+            style={
+              styles.rowContainer
+            }
           >
-            <View style={{ flex: 1 }}>
-              <InfoCard
-                title={e.cargo}
-                subtitle={e.empresa
-                  .replace('[PROJETO]', '')
+            <View
+              style={[
+                styles.card,
+                {
+                  backgroundColor:
+                    theme.card
+                }
+              ]}
+            >
+              <Text
+                style={[
+                  styles.cardTitle,
+                  {
+                    color:
+                      theme.text
+                  }
+                ]}
+              >
+                {e.cargo}
+              </Text>
+
+              <Text
+                style={[
+                  styles.cardSubtitle,
+                  {
+                    color:
+                      theme.text
+                  }
+                ]}
+              >
+                {e.empresa
+                  .replace(
+                    '[PROJETO]',
+                    ''
+                  )
                   .trim()}
-              />
+              </Text>
             </View>
 
             <TouchableOpacity
-              style={styles.deleteButtonSide}
+              style={
+                styles.deleteButtonSide
+              }
               onPress={() =>
                 handleDeleteItem(
                   e.id,
@@ -386,13 +587,15 @@ export default function PessoaDetalhes() {
             >
               <Trash2
                 color="#ff4444"
-                size={22}
+                size={18}
               />
             </TouchableOpacity>
           </View>
         ))}
 
-      <View style={{ height: 40 }} />
+      <View
+        style={{ height: 120 }}
+      />
     </ScrollView>
   );
 }
@@ -400,84 +603,156 @@ export default function PessoaDetalhes() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20
+    paddingHorizontal: 22,
+    paddingTop: 20,
   },
 
   loadingCenter: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+
+  themeBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   headerSection: {
-    marginBottom: 35,
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 34,
+    paddingTop: 10,
+  },
+
+  avatar: {
+    width: 92,
+    height: 92,
+    borderRadius: 46,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 18,
+  },
+
+  avatarText: {
+    fontSize: 34,
+    fontWeight: '700',
+  },
+
+  smallTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    marginBottom: 6,
   },
 
   name: {
-    fontSize: 32,
-    fontWeight: 'bold'
+    fontSize: 34,
+    fontWeight: '700',
+    letterSpacing: -1,
+    marginBottom: 6,
   },
 
   email: {
-    fontSize: 16,
-    opacity: 0.6,
-    marginBottom: 20
+    fontSize: 15,
+    opacity: 0.55,
+    marginBottom: 26,
   },
 
   mainActions: {
     flexDirection: 'row',
     width: '100%',
     gap: 12,
-    justifyContent: 'center'
   },
 
-  btnAction: {
-    height: 50,
-    borderRadius: 15,
+  btnPrimary: {
     flex: 1,
-    alignItems: 'center',
+    height: 54,
+    borderRadius: 18,
     justifyContent: 'center',
-    elevation: 3
+    alignItems: 'center',
+  },
+
+  btnDanger: {
+    width: 54,
+    height: 54,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:
+      'rgba(255,68,68,0.10)',
   },
 
   btnText: {
     fontSize: 15,
-    fontWeight: 'bold'
+    fontWeight: '600',
   },
 
   sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent:
+      'space-between',
     alignItems: 'center',
-    marginBottom: 15,
-    marginTop: 10
+    marginBottom: 16,
+    marginTop: 8,
   },
 
   sectionTitle: {
-    fontSize: 19,
-    fontWeight: 'bold'
+    fontSize: 20,
+    fontWeight: '700',
+    letterSpacing: -0.5,
   },
 
   btnAdd: {
-    padding: 5,
-    borderRadius: 50,
-    backgroundColor: 'rgba(210, 31, 60, 0.1)'
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:
+      'rgba(210,31,60,0.10)',
   },
 
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-    width: '100%'
+    marginBottom: 14,
+  },
+
+  card: {
+    flex: 1,
+    padding: 20,
+    borderRadius: 24,
+  },
+
+  cardTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    marginBottom: 6,
+  },
+
+  cardSubtitle: {
+    fontSize: 14,
+    opacity: 0.6,
+    marginBottom: 8,
+  },
+
+  cardFooter: {
+    fontSize: 13,
+    opacity: 0.45,
   },
 
   deleteButtonSide: {
-    padding: 15,
+    width: 52,
+    height: 52,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 68, 68, 0.08)',
-    borderRadius: 12,
-    marginLeft: 10
-  }
+    backgroundColor:
+      'rgba(255,68,68,0.08)',
+    marginLeft: 12,
+  },
 });
