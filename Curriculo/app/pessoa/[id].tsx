@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, Stack, useRouter, useFocusEffect } from 'expo-router';
 import api from './../../src/services/api';
 import { useTheme } from './../../src/context/ThemeContext';
@@ -11,15 +11,22 @@ export default function PessoaDetalhes() {
   const router = useRouter();
   const { theme, isDark, toggleTheme } = useTheme();
   const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const carregarDados = () => {
-    api.get(`/pessoas/${id}`)
-      .then((res) => setData(res.data))
-      .catch((err) => console.error(err));
+  const carregarDados = async () => {
+    try {
+      const res = await api.get(`/pessoas/${id}?t=${Date.now()}`);
+      setData(res.data);
+    } catch (err) {
+      console.error("Erro ao buscar dados:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useFocusEffect(
     React.useCallback(() => {
+      setLoading(true);
       carregarDados();
     }, [id])
   );
@@ -34,7 +41,15 @@ export default function PessoaDetalhes() {
     ]);
   };
 
-  if (!data) return <View style={{flex:1, backgroundColor: theme.background}} />;
+  if (loading && !data) {
+    return (
+      <View style={[styles.loadingCenter, { backgroundColor: theme.background }]}>
+        <ActivityIndicator size="large" color={theme.primary} />
+      </View>
+    );
+  }
+
+  if (!data) return null;
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -52,12 +67,10 @@ export default function PessoaDetalhes() {
       <View style={styles.headerSection}>
         <Text style={[styles.name, { color: theme.text }]}>{data.nome}</Text>
         <Text style={[styles.email, { color: theme.text }]}>{data.email}</Text>
-        
         <View style={styles.mainActions}>
            <TouchableOpacity style={[styles.btnAction, {backgroundColor: theme.primary}]} onPress={() => alert('Editar')}>
               <Text style={[styles.btnText, {color: isDark ? '#000' : '#fff'}]}>Editar Perfil</Text>
            </TouchableOpacity>
-           
            <TouchableOpacity style={[styles.btnAction, {backgroundColor: '#ff4444'}]} onPress={handleDeletePessoa}>
               <Text style={[styles.btnText, {color: '#fff'}]}>Excluir Tudo</Text>
            </TouchableOpacity>
@@ -66,28 +79,36 @@ export default function PessoaDetalhes() {
 
       <View style={styles.sectionHeader}>
         <Text style={[styles.sectionTitle, { color: theme.primary }]}>Formações Acadêmicas</Text>
-        <TouchableOpacity 
-          style={styles.btnAdd} 
-          onPress={() => router.push({ pathname: '/formacao/criar', params: { pessoaId: id } })}
-        >
+        <TouchableOpacity style={styles.btnAdd} onPress={() => router.push({ pathname: '/formacao/criar', params: { pessoaId: id } } as any)}>
           <Plus color={theme.primary} size={22} />
         </TouchableOpacity>
       </View>
-      {data.formacoes && data.formacoes.map((f: any) => (
-        <InfoCard key={f.id} title={f.curso} subtitle={f.instituicao} onDelete={() => {}} />
+      {data.formacoes?.map((f: any) => (
+        <InfoCard key={`form-${f.id}`} title={f.curso} subtitle={f.instituicao} footer={f.ano_conclusao ? `Concluído em: ${f.ano_conclusao}` : undefined} />
       ))}
 
       <View style={styles.sectionHeader}>
         <Text style={[styles.sectionTitle, { color: theme.primary }]}>Experiências Profissionais</Text>
-        <TouchableOpacity 
-          style={styles.btnAdd} 
-          onPress={() => router.push({ pathname: '/experiencia/criar', params: { pessoaId: id } })}
-        >
+        <TouchableOpacity style={styles.btnAdd} onPress={() => router.push({ pathname: '/experiencia/criar', params: { pessoaId: id } } as any)}>
           <Plus color={theme.primary} size={22} />
         </TouchableOpacity>
       </View>
-      {data.experiencias && data.experiencias.map((e: any) => (
-        <InfoCard key={e.id} title={e.cargo} subtitle={e.empresa} onDelete={() => {}} />
+      {data.experiencias?.filter((e: any) => !e.empresa?.includes('[PROJETO]')).map((e: any) => (
+        <InfoCard key={`exp-${e.id}`} title={e.cargo} subtitle={e.empresa} />
+      ))}
+
+      <View style={styles.sectionHeader}>
+        <Text style={[styles.sectionTitle, { color: theme.primary }]}>Projetos Realizados</Text>
+        <TouchableOpacity style={styles.btnAdd} onPress={() => router.push({ pathname: '/projeto/criar', params: { pessoaId: id } } as any)}>
+          <Plus color={theme.primary} size={22} />
+        </TouchableOpacity>
+      </View>
+      {data.experiencias?.filter((e: any) => e.empresa?.includes('[PROJETO]')).map((e: any) => (
+         <InfoCard 
+            key={`proj-${e.id}`} 
+            title={e.cargo} 
+            subtitle={e.empresa.replace('[PROJETO]', '').trim()} 
+         />
       ))}
 
       <View style={{height: 40}} />
@@ -97,6 +118,7 @@ export default function PessoaDetalhes() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
+  loadingCenter: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   headerSection: { marginBottom: 35, alignItems: 'center' },
   name: { fontSize: 32, fontWeight: 'bold' },
   email: { fontSize: 16, opacity: 0.6, marginBottom: 20 },
