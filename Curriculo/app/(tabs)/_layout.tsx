@@ -1,7 +1,12 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
+
 import { useTheme } from '../../src/context/ThemeContext';
-import { Users, Info } from 'lucide-react-native';
+
+import {
+  Users,
+  CircleHelp
+} from 'lucide-react-native';
 
 export default function TabLayout() {
   const { theme, isDark } = useTheme();
@@ -9,41 +14,53 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        headerShown: false,
 
         tabBarActiveTintColor: theme.primary,
-        tabBarInactiveTintColor: isDark ? '#888' : '#999',
-        
+
+        tabBarInactiveTintColor: isDark
+          ? '#777'
+          : '#999',
 
         tabBarStyle: {
-          backgroundColor: theme.background,
-          borderTopColor: isDark ? '#333' : '#eee',
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
+          backgroundColor: theme.card,
+          borderTopWidth: 0,
+          height: 70,
+          paddingTop: 10,
+          paddingBottom: 10,
+
+          shadowColor: '#000',
+          shadowOpacity: 0.06,
+          shadowRadius: 16,
+          shadowOffset: {
+            width: 0,
+            height: -4,
+          },
+
+          elevation: 0,
         },
 
-        headerStyle: {
-          backgroundColor: theme.background,
-          elevation: 0, 
-          shadowOpacity: 0, 
-        },
-        headerTintColor: theme.text,
-        headerTitleStyle: {
-          fontWeight: 'bold',
-          fontSize: 20,
-        },
-      
         tabBarLabelStyle: {
           fontSize: 12,
-          fontWeight: '500',
+          fontWeight: '600',
+          marginTop: -2,
         },
-      }}>
-      
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Perfis',
-          tabBarIcon: ({ color }) => <Users size={24} color={color} />,
+
+          tabBarIcon: ({
+            color,
+            focused,
+          }) => (
+            <Users
+              size={focused ? 24 : 22}
+              color={color}
+            />
+          ),
         }}
       />
 
@@ -51,7 +68,16 @@ export default function TabLayout() {
         name="two"
         options={{
           title: 'Sobre',
-          tabBarIcon: ({ color }) => <Info size={24} color={color} />,
+
+          tabBarIcon: ({
+            color,
+            focused,
+          }) => (
+            <CircleHelp
+              size={focused ? 24 : 22}
+              color={color}
+            />
+          ),
         }}
       />
     </Tabs>
