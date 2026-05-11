@@ -4,7 +4,7 @@ import { useLocalSearchParams, Stack, useRouter, useFocusEffect } from 'expo-rou
 import api from './../../src/services/api';
 import { useTheme } from './../../src/context/ThemeContext';
 import { InfoCard } from './../../src/components/InfoCard';
-import { Sun, Moon, Plus } from 'lucide-react-native';
+import { Sun, Moon, Plus, Trash2 } from 'lucide-react-native';
 
 export default function PessoaDetalhes() {
   const { id } = useLocalSearchParams();
@@ -31,24 +31,25 @@ export default function PessoaDetalhes() {
     }, [id])
   );
 
-  const handleDeletePessoa = () => {
-    Alert.alert("Atenção", "Deseja excluir este perfil?", [
-      { text: "Cancelar" },
-      { text: "Excluir", onPress: async () => {
-          await api.delete(`/pessoas/${id}`);
-          router.replace('/');
-      }}
+  const handleDeleteItem = (itemId: string, rota: 'formacoes' | 'experiencias') => {
+    Alert.alert("Remover Item", "Tem certeza que deseja apagar?", [
+      { text: "Cancelar", style: "cancel" },
+      { 
+        text: "Apagar", 
+        style: "destructive", 
+        onPress: async () => {
+          try {
+            await api.delete(`/${rota}/${itemId}`);
+            carregarDados();
+          } catch (err) {
+            Alert.alert("Erro", "Falha ao apagar.");
+          }
+        } 
+      }
     ]);
   };
 
-  if (loading && !data) {
-    return (
-      <View style={[styles.loadingCenter, { backgroundColor: theme.background }]}>
-        <ActivityIndicator size="large" color={theme.primary} />
-      </View>
-    );
-  }
-
+  if (loading && !data) return <View style={[styles.loadingCenter, { backgroundColor: theme.background }]}><ActivityIndicator size="large" color={theme.primary} /></View>;
   if (!data) return null;
 
   return (
@@ -71,9 +72,6 @@ export default function PessoaDetalhes() {
            <TouchableOpacity style={[styles.btnAction, {backgroundColor: theme.primary}]} onPress={() => alert('Editar')}>
               <Text style={[styles.btnText, {color: isDark ? '#000' : '#fff'}]}>Editar Perfil</Text>
            </TouchableOpacity>
-           <TouchableOpacity style={[styles.btnAction, {backgroundColor: '#ff4444'}]} onPress={handleDeletePessoa}>
-              <Text style={[styles.btnText, {color: '#fff'}]}>Excluir Tudo</Text>
-           </TouchableOpacity>
         </View>
       </View>
 
@@ -84,7 +82,12 @@ export default function PessoaDetalhes() {
         </TouchableOpacity>
       </View>
       {data.formacoes?.map((f: any) => (
-        <InfoCard key={`form-${f.id}`} title={f.curso} subtitle={f.instituicao} footer={f.ano_conclusao ? `Concluído em: ${f.ano_conclusao}` : undefined} />
+        <View key={f.id} style={styles.cardWrapper}>
+          <InfoCard title={f.curso} subtitle={f.instituicao} footer={f.ano_conclusao} />
+          <TouchableOpacity onPress={() => handleDeleteItem(f.id, 'formacoes')} style={styles.innerTrash}>
+            <Trash2 color="#ff4444" size={18} />
+          </TouchableOpacity>
+        </View>
       ))}
 
       <View style={styles.sectionHeader}>
@@ -94,7 +97,12 @@ export default function PessoaDetalhes() {
         </TouchableOpacity>
       </View>
       {data.experiencias?.filter((e: any) => !e.empresa?.includes('[PROJETO]')).map((e: any) => (
-        <InfoCard key={`exp-${e.id}`} title={e.cargo} subtitle={e.empresa} />
+        <View key={e.id} style={styles.cardWrapper}>
+          <InfoCard title={e.cargo} subtitle={e.empresa} />
+          <TouchableOpacity onPress={() => handleDeleteItem(e.id, 'experiencias')} style={styles.innerTrash}>
+            <Trash2 color="#ff4444" size={18} />
+          </TouchableOpacity>
+        </View>
       ))}
 
       <View style={styles.sectionHeader}>
@@ -104,11 +112,12 @@ export default function PessoaDetalhes() {
         </TouchableOpacity>
       </View>
       {data.experiencias?.filter((e: any) => e.empresa?.includes('[PROJETO]')).map((e: any) => (
-         <InfoCard 
-            key={`proj-${e.id}`} 
-            title={e.cargo} 
-            subtitle={e.empresa.replace('[PROJETO]', '').trim()} 
-         />
+         <View key={e.id} style={styles.cardWrapper}>
+            <InfoCard title={e.cargo} subtitle={e.empresa.replace('[PROJETO]', '').trim()} />
+            <TouchableOpacity onPress={() => handleDeleteItem(e.id, 'experiencias')} style={styles.innerTrash}>
+              <Trash2 color="#ff4444" size={18} />
+            </TouchableOpacity>
+         </View>
       ))}
 
       <View style={{height: 40}} />
@@ -123,9 +132,23 @@ const styles = StyleSheet.create({
   name: { fontSize: 32, fontWeight: 'bold' },
   email: { fontSize: 16, opacity: 0.6, marginBottom: 20 },
   mainActions: { flexDirection: 'row', width: '100%', gap: 12, justifyContent: 'center' },
-  btnAction: { height: 50, borderRadius: 15, flex: 1, alignItems: 'center', justifyContent: 'center', elevation: 3 },
+  btnAction: { height: 50, borderRadius: 15, paddingHorizontal: 30, alignItems: 'center', justifyContent: 'center', elevation: 3 },
   btnText: { fontSize: 15, fontWeight: 'bold' },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15, marginTop: 10 },
   sectionTitle: { fontSize: 19, fontWeight: 'bold' },
-  btnAdd: { padding: 5, borderRadius: 50, backgroundColor: 'rgba(210, 31, 60, 0.1)' }
+  btnAdd: { padding: 5, borderRadius: 50, backgroundColor: 'rgba(210, 31, 60, 0.1)' },
+  
+
+  cardWrapper: {
+    position: 'relative', 
+    marginBottom: 5,
+  },
+
+  innerTrash: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    padding: 8,
+    zIndex: 10, 
+  }
 });
