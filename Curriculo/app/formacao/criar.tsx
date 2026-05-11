@@ -15,6 +15,7 @@ export default function CriarFormacao() {
     ano_conclusao: ''
   });
 
+  
   const handleSalvar = async () => {
     if (!form.curso || !form.instituicao) {
       Alert.alert("Aviso", "Por favor, preencha o curso e a instituição.");

@@ -10,27 +10,27 @@ export default function CriarProjeto() {
   const { theme } = useTheme();
   const [form, setForm] = useState({ nome: '', descricao: '' });
 
+  
+
   const handleSalvar = async () => {
-    if (!form.nome || !form.descricao) return;
-    if (!pessoaId) {
-      Alert.alert("Erro", "ID do perfil não encontrado.");
-      return;
-    }
-
-    const payload = { 
-      cargo: form.nome, 
-      empresa: `[PROJETO] ${form.descricao}`, 
-      pessoaId: Number(pessoaId) 
-    };
-
-    try {
-      await api.post('/experiencias', payload);
-      router.back();
-    } catch (err) {
-      console.error(err);
-      Alert.alert("Erro", "Falha ao salvar projeto.");
-    }
+  const idNumerico = Number(pessoaId);
+  
+  const payload = { 
+    cargo: form.nome, 
+    empresa: `[PROJETO] ${form.descricao}`, 
+    pessoaId: idNumerico 
   };
+
+  // ESTE ALERT VAI TE DIZER A VERDADE:
+  alert("Enviando ID: " + payload.pessoaId + " tipo: " + typeof payload.pessoaId);
+
+  try {
+    await api.post('/experiencias', payload);
+    router.back();
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>

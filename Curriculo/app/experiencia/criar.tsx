@@ -10,6 +10,7 @@ export default function CriarExperiencia() {
   const { theme } = useTheme();
   const [form, setForm] = useState({ cargo: '', empresa: '' });
 
+  
   const handleSalvar = async () => {
     if (!form.cargo || !form.empresa) return;
     if (!pessoaId) {
