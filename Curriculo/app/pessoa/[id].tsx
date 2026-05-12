@@ -24,7 +24,8 @@ import {
   Sun,
   Moon,
   Plus,
-  Trash2
+  Trash2,
+  Pencil
 } from 'lucide-react-native';
 
 export default function PessoaDetalhes() {
@@ -379,22 +380,44 @@ export default function PessoaDetalhes() {
               </Text>
             </View>
 
-            <TouchableOpacity
-              style={
-                styles.deleteButtonSide
-              }
-              onPress={() =>
-                handleDeleteItem(
-                  f.id,
-                  'formacoes'
-                )
-              }
+            <View
+              style={styles.actionButtons}
             >
-              <Trash2
-                color="#ff4444"
-                size={18}
-              />
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={
+                  styles.editButtonSide
+                }
+                onPress={() =>
+                  router.push(
+                    `/formacao/editar/${f.id}`
+                  )
+                }
+              >
+                <Pencil
+                  color={
+                    theme.primary
+                  }
+                  size={18}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={
+                  styles.deleteButtonSide
+                }
+                onPress={() =>
+                  handleDeleteItem(
+                    f.id,
+                    'formacoes'
+                  )
+                }
+              >
+                <Trash2
+                  color="#ff4444"
+                  size={18}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         )
       )}
@@ -478,22 +501,44 @@ export default function PessoaDetalhes() {
               </Text>
             </View>
 
-            <TouchableOpacity
-              style={
-                styles.deleteButtonSide
-              }
-              onPress={() =>
-                handleDeleteItem(
-                  e.id,
-                  'experiencias'
-                )
-              }
+            <View
+              style={styles.actionButtons}
             >
-              <Trash2
-                color="#ff4444"
-                size={18}
-              />
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={
+                  styles.editButtonSide
+                }
+                onPress={() =>
+                  router.push(
+                    `/experiencia/editar/${e.id}`
+                  )
+                }
+              >
+                <Pencil
+                  color={
+                    theme.primary
+                  }
+                  size={18}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={
+                  styles.deleteButtonSide
+                }
+                onPress={() =>
+                  handleDeleteItem(
+                    e.id,
+                    'experiencias'
+                  )
+                }
+              >
+                <Trash2
+                  color="#ff4444"
+                  size={18}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
 
@@ -580,22 +625,44 @@ export default function PessoaDetalhes() {
               </Text>
             </View>
 
-            <TouchableOpacity
-              style={
-                styles.deleteButtonSide
-              }
-              onPress={() =>
-                handleDeleteItem(
-                  e.id,
-                  'experiencias'
-                )
-              }
+            <View
+              style={styles.actionButtons}
             >
-              <Trash2
-                color="#ff4444"
-                size={18}
-              />
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={
+                  styles.editButtonSide
+                }
+                onPress={() =>
+                  router.push(
+                    `/projeto/editar/${e.id}`
+                  )
+                }
+              >
+                <Pencil
+                  color={
+                    theme.primary
+                  }
+                  size={18}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={
+                  styles.deleteButtonSide
+                }
+                onPress={() =>
+                  handleDeleteItem(
+                    e.id,
+                    'experiencias'
+                  )
+                }
+              >
+                <Trash2
+                  color="#ff4444"
+                  size={18}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
 
@@ -751,6 +818,22 @@ const styles = StyleSheet.create({
     opacity: 0.45,
   },
 
+  actionButtons: {
+    flexDirection: 'row',
+    marginLeft: 12,
+    gap: 10,
+  },
+
+  editButtonSide: {
+    width: 52,
+    height: 52,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor:
+      'rgba(210,31,60,0.08)',
+  },
+
   deleteButtonSide: {
     width: 52,
     height: 52,
@@ -759,6 +842,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor:
       'rgba(255,68,68,0.08)',
-    marginLeft: 12,
   },
 });
