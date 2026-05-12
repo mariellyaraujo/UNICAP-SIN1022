@@ -1,50 +1,64 @@
 import { Stack } from 'expo-router';
-import { ThemeProvider, useTheme } from '../src/context/ThemeContext';
-
-function AppStack() {
-  const { theme } = useTheme();
-
-  return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: theme.background,
-        },
-        headerShadowVisible: false,
-        headerTintColor: theme.text,
-        headerTitleStyle: {
-          fontSize: 18,
-          fontWeight: '600',
-        },
-        contentStyle: {
-          backgroundColor: theme.background,
-        },
-        animation: 'ios_from_right',
-      }}
-    >
-      <Stack.Screen
-        name="(tabs)"
-        options={{
-          headerShown: false,
-        }}
-      />
-
-      <Stack.Screen
-        name="pessoa/[id]"
-        options={{
-          headerShown: true,
-          title: 'Currículo',
-          headerBackTitle: 'Voltar',
-        }}
-      />
-    </Stack>
-  );
-}
+import { ThemeProvider } from '../src/context/ThemeContext';
 
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <AppStack />
+      <Stack
+        screenOptions={{
+          headerShadowVisible: false,
+          headerTitle: '',
+        }}
+      >
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false
+          }}
+        />
+
+        <Stack.Screen
+          name="pessoa/[id]"
+          options={{
+            headerShown: true
+          }}
+        />
+
+        <Stack.Screen
+          name="pessoa/criar"
+          options={{
+            headerShown: true
+          }}
+        />
+
+        <Stack.Screen
+          name="pessoa/editar"
+          options={{
+            headerShown: true
+          }}
+        />
+
+        <Stack.Screen
+          name="formacao/criar"
+          options={{
+            headerShown: true
+          }}
+        />
+
+        <Stack.Screen
+          name="experiencia/criar"
+          options={{
+            headerShown: true
+          }}
+        />
+
+        <Stack.Screen
+          name="projeto/criar"
+          options={{
+            headerShown: true
+          }}
+        />
+      </Stack>
     </ThemeProvider>
   );
 }

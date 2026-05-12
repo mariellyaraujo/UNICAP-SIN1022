@@ -1,66 +1,342 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Alert,
+} from 'react-native';
+
 import { useRouter, Stack } from 'expo-router';
+
 import api from './../../src/services/api';
 import { useTheme } from './../../src/context/ThemeContext';
 
 export default function CriarPessoa() {
   const router = useRouter();
-  const { theme } = useTheme();
-  const [form, setForm] = useState({ nome: '', email: '', resumo: '' });
+
+  const { theme, isDark } = useTheme();
+
+  const [form, setForm] = useState({
+    nome: '',
+    email: '',
+    resumo: '',
+  });
 
   const handleSalvar = async () => {
-    if (!form.nome || !form.email) return;
-    await api.post('/pessoas', form);
-    router.back();
+    if (!form.nome || !form.email) {
+      Alert.alert(
+        'Campos obrigatórios',
+        'Preencha nome e email.'
+      );
+
+      return;
+    }
+
+    try {
+      await api.post('/pessoas', form);
+
+      router.back();
+    } catch (error) {
+      Alert.alert(
+        'Erro',
+        'Não foi possível criar o perfil.'
+      );
+    }
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-      <Stack.Screen options={{ title: 'Novo Perfil', headerShown: true, headerStyle: { backgroundColor: theme.background }, headerTintColor: theme.text }} />
-      
-      <Text style={[styles.label, { color: theme.primary }]}>Nome Completo</Text>
-      <TextInput 
-        style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
-        value={form.nome} 
-        onChangeText={(t) => setForm({...form, nome: t})}
-        placeholder="Ex: Fulano de Oliveira"
-        placeholderTextColor="#888"
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={[
+        styles.container,
+        {
+          backgroundColor:
+            theme.background,
+        },
+      ]}
+    >
+      <Stack.Screen
+        options={{
+          title: 'Novo Perfil',
+
+          headerShadowVisible: false,
+
+          headerStyle: {
+            backgroundColor:
+              theme.background,
+          },
+
+          headerTintColor:
+            theme.text,
+
+          headerTitleStyle: {
+            fontWeight: '700',
+          },
+        }}
       />
 
-      <Text style={[styles.label, { color: theme.primary }]}>E-mail</Text>
-      <TextInput 
-        style={[styles.input, { backgroundColor: theme.card, color: theme.text }]} 
-        value={form.email} 
-        onChangeText={(t) => setForm({...form, email: t})}
-        keyboardType="email-address"
-        placeholder="Ex: fulano@email.com"
-        placeholderTextColor="#888"
-      />
+      <View style={styles.header}>
+        <Text
+          style={[
+            styles.smallTitle,
+            {
+              color: theme.primary,
+            },
+          ]}
+        >
+          ✨ create profile
+        </Text>
 
-      <Text style={[styles.label, { color: theme.primary }]}>Resumo Profissional</Text>
-      <TextInput 
-        style={[styles.input, { backgroundColor: theme.card, color: theme.text, height: 100 }]} 
-        value={form.resumo} 
-        onChangeText={(t) => setForm({...form, resumo: t})}
-        multiline
-        placeholder="Ex: Desenvolvedor Full Stack com 5 anos de experiência..."
-        placeholderTextColor="#888"
-        textAlignVertical="top"
-      />
+        <Text
+          style={[
+            styles.title,
+            {
+              color: theme.text,
+            },
+          ]}
+        >
+          Criar perfil
+        </Text>
 
-      <TouchableOpacity style={[styles.btn, { backgroundColor: theme.primary }]} onPress={handleSalvar}>
-        <Text style={styles.btnText}>Criar Perfil</Text>
+        <Text
+          style={[
+            styles.subtitle,
+            {
+              color: theme.text,
+            },
+          ]}
+        >
+          Adicione um novo currículo
+          de forma simples e bonita.
+        </Text>
+      </View>
+
+      <View
+        style={[
+          styles.formCard,
+          {
+            backgroundColor:
+              theme.card,
+          },
+        ]}
+      >
+        <View style={styles.inputGroup}>
+          <Text
+            style={[
+              styles.label,
+              {
+                color: theme.primary,
+              },
+            ]}
+          >
+            Nome completo
+          </Text>
+
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor:
+                  isDark
+                    ? '#181818'
+                    : '#f6f6f6',
+
+                color: theme.text,
+              },
+            ]}
+            value={form.nome}
+            onChangeText={(t) =>
+              setForm({
+                ...form,
+                nome: t,
+              })
+            }
+            placeholder="Ex: Maria Oliveira"
+            placeholderTextColor="#8e8e8e"
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text
+            style={[
+              styles.label,
+              {
+                color: theme.primary,
+              },
+            ]}
+          >
+            E-mail
+          </Text>
+
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor:
+                  isDark
+                    ? '#181818'
+                    : '#f6f6f6',
+
+                color: theme.text,
+              },
+            ]}
+            value={form.email}
+            onChangeText={(t) =>
+              setForm({
+                ...form,
+                email: t,
+              })
+            }
+            keyboardType="email-address"
+            placeholder="Ex: maria@email.com"
+            placeholderTextColor="#8e8e8e"
+            autoCapitalize="none"
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text
+            style={[
+              styles.label,
+              {
+                color: theme.primary,
+              },
+            ]}
+          >
+            Resumo profissional
+          </Text>
+
+          <TextInput
+            style={[
+              styles.input,
+              styles.textArea,
+              {
+                backgroundColor:
+                  isDark
+                    ? '#181818'
+                    : '#f6f6f6',
+
+                color: theme.text,
+              },
+            ]}
+            value={form.resumo}
+            onChangeText={(t) =>
+              setForm({
+                ...form,
+                resumo: t,
+              })
+            }
+            multiline
+            textAlignVertical="top"
+            placeholder="Conte um pouco sobre você..."
+            placeholderTextColor="#8e8e8e"
+          />
+        </View>
+      </View>
+
+      <TouchableOpacity
+        activeOpacity={0.85}
+        style={[
+          styles.btn,
+          {
+            backgroundColor:
+              theme.primary,
+          },
+        ]}
+        onPress={handleSalvar}
+      >
+        <Text
+          style={[
+            styles.btnText,
+            {
+              color: isDark
+                ? '#000'
+                : '#fff',
+            },
+          ]}
+        >
+          Criar Perfil
+        </Text>
       </TouchableOpacity>
-      <View style={{height: 40}} />
+
+      <View style={{ height: 120 }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  label: { fontSize: 16, fontWeight: 'bold', marginBottom: 8, marginTop: 15 },
-  input: { borderRadius: 10, padding: 15, fontSize: 16 },
-  btn: { marginTop: 30, padding: 18, borderRadius: 12, alignItems: 'center' },
-  btnText: { color: '#fff', fontWeight: 'bold', fontSize: 16 }
+  container: {
+    flex: 1,
+    paddingHorizontal: 22,
+    paddingTop: 24,
+  },
+
+  header: {
+    marginBottom: 28,
+  },
+
+  smallTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    marginBottom: 8,
+  },
+
+  title: {
+    fontSize: 34,
+    fontWeight: '700',
+    letterSpacing: -1,
+    marginBottom: 8,
+  },
+
+  subtitle: {
+    fontSize: 15,
+    lineHeight: 24,
+    opacity: 0.55,
+  },
+
+  formCard: {
+    borderRadius: 30,
+    padding: 20,
+    marginBottom: 28,
+  },
+
+  inputGroup: {
+    marginBottom: 22,
+  },
+
+  label: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 10,
+    marginLeft: 4,
+  },
+
+  input: {
+    borderRadius: 18,
+    paddingHorizontal: 18,
+    height: 58,
+    fontSize: 15,
+  },
+
+  textArea: {
+    height: 130,
+    paddingTop: 18,
+  },
+
+  btn: {
+    height: 58,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  btnText: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
 });

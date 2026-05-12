@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import {
   View,
   Text,
@@ -6,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
- ActivityIndicator
+  ActivityIndicator
 } from 'react-native';
 
 import {
@@ -258,6 +259,11 @@ export default function PessoaDetalhes() {
                   theme.primary
               }
             ]}
+            onPress={() =>
+              router.push(
+                `/pessoa/editar/${id}`
+              )
+            }
           >
             <Text
               style={[
@@ -693,9 +699,8 @@ const styles = StyleSheet.create({
 
   sectionHeader: {
     flexDirection: 'row',
-    justifyContent:
-      'space-between',
     alignItems: 'center',
+    alignSelf: 'flex-start',
     marginBottom: 16,
     marginTop: 8,
   },
@@ -704,12 +709,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     letterSpacing: -0.5,
+    marginRight: 8,
   },
 
   btnAdd: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor:
