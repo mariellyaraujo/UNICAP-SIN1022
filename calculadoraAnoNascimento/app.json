@@ -2,6 +2,7 @@
   "expo": {
     "name": "calculadoraAnoNascimento",
     "slug": "calculadoraAnoNascimento",
+    "owner": "unicap-mobile-2026-marielly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
